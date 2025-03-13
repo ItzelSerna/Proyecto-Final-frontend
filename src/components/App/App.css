@@ -1,0 +1,11 @@
+html {
+    margin: 0;
+    font-family: "Inter", Arial, sans-serif;
+    background-color: #ffffff;
+    color: #1A1B22;
+    text-rendering: optimizeLegibility;
+  }
+  .page {
+    margin: 0 auto;
+    max-width: 880px;
+  }
