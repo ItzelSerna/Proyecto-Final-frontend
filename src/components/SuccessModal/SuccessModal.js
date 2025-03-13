@@ -3,7 +3,7 @@ import React from 'react';
 export default function SuccessModal({ 
   isOpen, 
   onClose,
-  onGoToLogin  // (opcional) callback para ir al login
+  onGoToLogin  
 }) {
   const modalClassName = `success-modal ${isOpen ? 'success-modal_opened' : ''}`;
 

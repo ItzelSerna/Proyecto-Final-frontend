@@ -7,7 +7,6 @@ import { CardsContext } from '../../contexts/CardsContext';
 export default function Main(props) {
   const { renderThree, setRenderThree } = useContext(CardsContext);
 
-  // Extraemos las props necesarias
   const { articles = [], failed, type, savedArticles = [], isLoggedIn } = props;
 
   function renderThreeMore() {
@@ -25,11 +24,10 @@ export default function Main(props) {
           <NotFound failed={failed} type={type} />
         ) : (
           articles.slice(0, renderThree).map((el) => {
-            // Determinamos si el artículo actual está guardado usando la prop savedArticles
             const isSaved = savedArticles.some(saved => saved.url === el.url);
             return (
               <NewsCard
-                key={el.url} // se usa la URL como identificador único
+                key={el.url} 
                 item={el}
                 isLoggedIn={isLoggedIn}
                 isSaved={isSaved}

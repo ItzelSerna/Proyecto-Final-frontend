@@ -5,7 +5,7 @@
   
   export function getUser(email) {
     const savedUser = localStorage.getItem(`user_${email}`);
-    return savedUser ? JSON.parse(savedUser) : { email, name: 'Usuario' }; // Asegura que el nombre nunca sea null
+    return savedUser ? JSON.parse(savedUser) : { email, name: 'Usuario' }; 
   }
 
   export function saveArticles(email, articles) {
