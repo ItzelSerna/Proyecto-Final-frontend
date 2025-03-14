@@ -13,6 +13,7 @@ import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CardsContext } from '../../contexts/CardsContext';
 import api from '../../utils/ThirdPartyApi';
 import { registerUser, getUser, saveArticles, getSavedArticles } from '../../utils/auth';
+import { STORAGE_KEY_USER, STORAGE_KEY_ARTICLES } from '../../utils/config';
 
 function App() {
   const [data, setData] = useState([]);
@@ -23,24 +24,25 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [currentUser, setCurrentUser] = useState(() => {
-    const savedUser = localStorage.getItem('currentUser');
+    const savedUser = localStorage.getItem(STORAGE_KEY_USER);
     return savedUser ? JSON.parse(savedUser) : { email: '', name: '' };
-  });
+});
 
   const [savedArticles, setSavedArticles] = useState(() => {
     if (currentUser.email) {
-      return getSavedArticles(currentUser.email);
+        const saved = localStorage.getItem(`${STORAGE_KEY_ARTICLES}${currentUser.email}`);
+        return saved ? JSON.parse(saved) : [];
     }
     return [];
-  });
+});
 
   useEffect(() => {
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
   }, [currentUser]);
 
   useEffect(() => {
     if (currentUser.email) {
-      saveArticles(currentUser.email, savedArticles);
+        localStorage.setItem(`${STORAGE_KEY_ARTICLES}${currentUser.email}`, JSON.stringify(savedArticles));
     }
   }, [savedArticles, currentUser.email]);
 
@@ -136,7 +138,7 @@ function App() {
     setIsLoggedIn(false);
     setCurrentUser({ email: '', name: '' });
     setSavedArticles([]);
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem(STORAGE_KEY_USER);
   }
 
   function handleSaveArticle(article) {
@@ -169,61 +171,61 @@ function App() {
       <SuccessModal isOpen={isSuccessModalOpen} onClose={closeAllPopups} />
 
       <Routes>
-        <Route
-          path="/"
+        <Route 
+          path="/" 
           element={
             <>
-              <Header
-                getInfo={getInfo}
-                onLogin={handleOpenFormPopupLogin}
-                onLogout={handleLogout}
-                isLoggedIn={isLoggedIn}
-                showSearchBar={true}
-                isSavedNews={false}
+              <Header 
+                getInfo={getInfo} 
+                onLogin={handleOpenFormPopupLogin} 
+                onLogout={handleLogout} 
+                isLoggedIn={isLoggedIn} 
+                showSearchBar={true} 
+                isSavedNews={false} 
               />
-              <Main
-                articles={data}
-                failed={notFound}
-                type={typeError}
-                isLoggedIn={isLoggedIn}
-                onLogin={handleOpenFormPopupLogin}
-                onSaveArticle={handleSaveArticle}
-                savedArticles={savedArticles}
+              <Main 
+                articles={data} 
+                failed={notFound} 
+                type={typeError} 
+                isLoggedIn={isLoggedIn} 
+                onLogin={handleOpenFormPopupLogin} 
+                onSaveArticle={handleSaveArticle} 
+                savedArticles={savedArticles} 
               />
               <Footer />
             </>
-          }
+          } 
         />
 
-        <Route
-          path="/saved-news"
+        <Route 
+          path="/saved-news" 
           element={
-            <ProtectedRoute
-              loggedIn={isLoggedIn}
+            <ProtectedRoute 
+              loggedIn={isLoggedIn} 
               element={() => (
                 <>
-                  <Header
-                    onLogin={handleOpenFormPopupLogin}
-                    onLogout={handleLogout}
-                    isLoggedIn={isLoggedIn}
-                    showSearchBar={false}
-                    isSavedNews={true}
-                    userName={currentUser.name}
+                  <Header 
+                    onLogin={handleOpenFormPopupLogin} 
+                    onLogout={handleLogout} 
+                    isLoggedIn={isLoggedIn} 
+                    showSearchBar={false} 
+                    isSavedNews={true} 
+                    userName={currentUser.name} 
                   />
-                  <SavedNews
-                    userName={currentUser.name}
-                    savedArticles={savedArticles}
-                    onCardDelete={(article) =>
+                  <SavedNews 
+                    userName={currentUser.name} 
+                    savedArticles={savedArticles} 
+                    onCardDelete={(article) => 
                       setSavedArticles(
                         savedArticles.filter((a) => a.url !== article.url)
                       )
-                    }
+                    } 
                   />
                   <Footer />
                 </>
-              )}
+              )} 
             />
-          }
+          } 
         />
 
         <Route path="*" element={<Navigate to="/" replace />} />
